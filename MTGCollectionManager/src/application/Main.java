@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -84,7 +85,7 @@ public class Main extends Application
     public static void main(String[] args)
     {
         // fetch latest json database
-        boolean checkForOracleUpdates = true;
+        boolean checkForOracleUpdates = false;
         String oracleDatabaseJSON = "";
         if (checkForOracleUpdates)
         {
@@ -96,9 +97,15 @@ public class Main extends Application
             {
                 BufferedReader reader = new BufferedReader(new FileReader("scryfall-oracle-cards.json"));
                 String line;
+                ArrayList<String> lines = new ArrayList<String>();
+                int i = 0;
                 while ((line = reader.readLine()) != null)
                 {
-                   oracleDatabaseJSON += line;
+                    lines.add(line);
+                   if ((++i) % 100 == 0)
+                   {
+                       System.out.println("Read line: " + i);
+                   }
                 }
                 reader.close();
             }

@@ -1,59 +1,122 @@
 package application;
 
-import java.util.regex.*;
+import java.io.StringReader;
+import java.util.StringTokenizer;
 
 public class Card
 {
-    enum color
+    enum eColor
     {
-        BLACK,
-        BLUE,
-        GREEN,
-        RED,
-        WHITE
+        BLACK(0),
+        BLUE(1),
+        GREEN(2),
+        RED(3),
+        WHITE(4),
+        length(5);
+
+        public final int value;
+        
+        eColor(final int i) {
+            value = i;
+        }
     }
     
-    enum formats
+    enum eFormats
     {
-        STANDARD,
-        FUTURE,
-        HISTORIC,
-        PIONEER,
-        MODERN,
-        LEGACY,
-        PAUPER,
-        VINTAGE,
-        PENNY,
-        COMMANDER,
-        BRAWL,
-        DUEL,
-        OLDSCHOOL
+        STANDARD(0),
+        FUTURE(1),
+        HISTORIC(2),
+        PIONEER(3),
+        MODERN(4),
+        LEGACY(5),
+        PAUPER(6),
+        VINTAGE(7),
+        PENNY(8),
+        COMMANDER(9),
+        BRAWL(10),
+        DUEL(11),
+        OLDSCHOOL(12),
+        length(13);
+        
+        public final int value;
+        
+        eFormats(final int i) {
+            value = i;
+        }
+    }
+    
+    enum eLegality
+    {
+        LEGAL,
+        RESTRICTED,
+        BANNED
     }
     
     String name;
     String imgThumbnailURL;
-    boolean[] color_identity;
     boolean[] color;
-    boolean[] legalities;
-    
-    //private static String regexParsePattern = ".*\"name\":\"(.*?)\".+\"image_urls\":\\{\"small\":\"(.*?)\"";
-    
+    boolean[] color_identity;
+    eLegality[] legalities;
+
     public Card(String cardJSONObj)
     {
         Integer lastPass = 0;
-        
+
         name = getArgument("\"name\":\"", cardJSONObj, lastPass);
-        
+
         imgThumbnailURL = getArgument("\"image_uris\":{\"small\":\"", cardJSONObj, lastPass);
-        /* Regex approach is too processor intensive
-        Pattern parsePattern = Pattern.compile(regexParsePattern);
-        Matcher cardMatcher = parsePattern.matcher(cardJSONObj);
-        while (cardMatcher.find())
+
+        color = new boolean[eColor.length.value];
+        String[] colors = getStringArray("\"colors\":", cardJSONObj, lastPass);
+        for (String clr : colors)
         {
-            name = cardMatcher.group(1);
-            imgThumbnailURL = cardMatcher.group(2);
+            switch (clr)
+            {
+            case "B":
+                color[eColor.BLACK.value] = true; 
+                break;
+            case "U":
+                color[eColor.BLUE.value] = true; 
+                break;
+            case "G":
+                color[eColor.GREEN.value] = true; 
+                break;
+            case "R":
+                color[eColor.RED.value] = true;
+                break;
+            case "W":
+                color[eColor.WHITE.value] = true;
+                break;
+            default:
+                System.err.println("Unknown color: " + clr);
+            }
         }
-        */
+        
+        color_identity = new boolean[eColor.length.value];
+        String[] color_identities = getStringArray("\"color_identity\":", cardJSONObj, lastPass);
+        for (String clr : color_identities)
+        {
+            switch (clr)
+            {
+            case "B":
+                color_identity[eColor.BLACK.value] = true; 
+                break;
+            case "U":
+                color_identity[eColor.BLUE.value] = true; 
+                break;
+            case "G":
+                color_identity[eColor.GREEN.value] = true; 
+                break;
+            case "R":
+                color_identity[eColor.RED.value] = true;
+                break;
+            case "W":
+                color_identity[eColor.WHITE.value] = true;
+                break;
+            default:
+                System.err.println("Unknown color: " + clr);
+            }
+        }
     }
     
     private String getArgument(String preceeding, String json, Integer start)
@@ -62,5 +125,22 @@ public class Card
         int argEnd   = json.indexOf("\"", argStart + 1);
         start = argEnd;
         return json.substring(argStart, argEnd);
+    }
+    
+    private String[] getStringArray(String preceeding, String json, Integer start)
+    {
+        int argStart = json.indexOf(preceeding + "[", start) + preceeding.length() + 1;
+        int argEnd   = json.indexOf("]", argStart);
+        start = argEnd;
+        StringTokenizer stringTkn = new StringTokenizer(json.substring(argStart, argEnd), "\",");
+        String[] stringArray = new String[stringTkn.countTokens()];
+        int i = 0;
+        while (stringTkn.hasMoreTokens())
+        {
+            String nextColorToken = stringTkn.nextToken();
+            System.out.println(nextColorToken);
+            stringArray[i++] = nextColorToken;
+        }
+        return stringArray;
     }
 }

@@ -1,6 +1,8 @@
 package application;
 
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Card
@@ -15,13 +17,13 @@ public class Card
         length(5);
 
         public final int value;
-        
+
         eColor(final int i) {
             value = i;
         }
     }
     
-    enum eFormats
+    enum eFormat
     {
         STANDARD(0),
         FUTURE(1),
@@ -40,7 +42,7 @@ public class Card
         
         public final int value;
         
-        eFormats(final int i) {
+        eFormat(final int i) {
             value = i;
         }
     }
@@ -62,10 +64,13 @@ public class Card
     {
         Integer lastPass = 0;
 
+        // populate name
         name = getArgument("\"name\":\"", cardJSONObj, lastPass);
 
+        // populate image url
         imgThumbnailURL = getArgument("\"image_uris\":{\"small\":\"", cardJSONObj, lastPass);
 
+        // populate card color
         color = new boolean[eColor.length.value];
         String[] colors = getStringArray("\"colors\":", cardJSONObj, lastPass);
         for (String clr : colors)
@@ -91,7 +96,8 @@ public class Card
                 System.err.println("Unknown color: " + clr);
             }
         }
-        
+
+        // populate card color identity
         color_identity = new boolean[eColor.length.value];
         String[] color_identities = getStringArray("\"color_identity\":", cardJSONObj, lastPass);
         for (String clr : color_identities)
@@ -117,6 +123,13 @@ public class Card
                 System.err.println("Unknown color: " + clr);
             }
         }
+        
+        // populate legality by format
+        Map<String, String> legalityMap = getNestedObj("\"legalities\":", cardJSONObj, lastPass);
+        legalityMap.forEach((formatString, legalityString) ->
+        {
+            legalities[eFormat.valueOf(formatString.toUpperCase()).value] = eLegality.valueOf(legalityString.toUpperCase());
+        });
     }
     
     private String getArgument(String preceeding, String json, Integer start)
@@ -142,5 +155,20 @@ public class Card
             stringArray[i++] = nextColorToken;
         }
         return stringArray;
+    }
+    
+    private Map<String, String> getNestedObj(String preceeding, String json, Integer start)
+    {
+        Map nestedObj = new HashMap<String, String>();
+        
+        int argStart = json.indexOf(preceeding, start) + preceeding.length();
+        int argEnd = json.indexOf("}", argStart);
+        start = argEnd;
+        StringTokenizer stringTkn = new StringTokenizer(json.substring(argStart, argEnd), "{}:,\"");
+        while (stringTkn.hasMoreTokens())
+        {
+            nestedObj.put(stringTkn.nextToken(), stringTkn.nextToken());
+        }
+        return nestedObj;
     }
 }

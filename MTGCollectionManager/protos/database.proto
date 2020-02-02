@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+message ImgUris
+{
+    string small = 1;
+    string normal = 2;
+    string large = 3;
+    string png = 4;
+    string art_crop = 5;
+    string border_crop = 6;
+}
+
+message Legalities
+{
+    string standard = 1;
+    string future = 2;
+    string historic = 3;
+    string pioneer = 4;
+    string modern = 5;
+    string legacy = 6;
+    string pauper = 7;
+    string vintage = 8;
+    string penny = 9;
+    string commander = 10;
+    string brawl = 11;
+    string duel = 12;
+    string oldschool = 13;
+}
+
+message RelatedUris
+{
+    string gatherer = 1;
+    string tcgplayer_decks = 2;
+    string edhrec = 3;
+    string mtgtop8 = 4;
+}
+
+message card
+{
+    string object = 1;
+    string id = 2;
+    string oracle_id = 3;
+    repeated int32 multiverse_ids = 4;
+    int32 mtgo_id = 5;
+    int32 mtgo_foil_id = 6;
+    int32 tcgplayer_id = 7;
+    string name = 8;
+    string lang = 9;
+    string released_at = 10;
+    string uri = 11;
+    string scryfall_uri = 12;
+    string layout = 13;
+    bool highres_image = 14;
+    ImgUris img_uris = 15;
+    string mana_cost = 16;
+    float cmc = 17;
+    string type_line = 18;
+    string oracle_text = 19;
+    repeated string colors = 20;
+    repeated string color_identity = 21;
+    Legalities legalities = 22;
+    repeated string games = 23;
+    bool reserved = 24;
+    bool foil = 25;
+    bool nonfoil = 26;
+    bool oversized = 27;
+    bool promo = 28;
+    bool reprint = 29;
+    bool variation = 30;
+    string set = 31;
+    string set_name = 32;
+    string set_type = 33;
+    string set_uri = 34;
+    string set_search_uri = 35;
+    string scryfall_set_uri = 36;
+    string rulings_uri = 37;
+    string prints_search_uri = 38;
+    string collector_number = 39;
+    bool digital = 40;
+    string rarity = 41;
+    string flavor_text = 42;
+    string card_back_id = 43;
+    string artist = 44;
+    repeated string artist_ids = 45;
+    string illustration_id = 46;
+    string border_color = 47;
+    string frame = 48;
+    bool full_art = 49;
+    bool textless = 50;
+    bool booster = 51;
+    bool story_spotlight = 52;
+    int32 edhrec_rank = 53;
+    RelatedUris related_uris = 54;
+}
+
+message Database
+{
+    repeated card cards = 1;
+}

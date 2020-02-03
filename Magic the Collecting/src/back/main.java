@@ -3,6 +3,11 @@ package back;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Iterator;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.*;
 
 public class main {
 
@@ -20,24 +25,42 @@ public class main {
             {
                 BufferedReader reader = new BufferedReader(new FileReader("scryfall-oracle-cards.json"));
                 String line;
-                ArrayList<String> lines = new ArrayList<String>();
+                StringBuilder lines = new StringBuilder();
                 int i = 0;
                 while ((line = reader.readLine()) != null)
                 {
-                    lines.add(line);
-                   if ((++i) % 100 == 0)
-                   {
-                       System.out.println("Read line: " + i);
-                   }
+	                lines.append(line + '\n');
                 }
                 reader.close();
+                oracleDatabaseJSON = lines.toString();
             }
             catch (Exception e)
             {
-                System.out.println("Couldn't read cached oracle text.");
+                System.err.println("Couldn't read cached oracle text.");
                 e.printStackTrace();
             }
         }
+
+        System.out.println("Finished extracting database");
+
+        // deserializing json
+        JSONArray databaseArray;
+        try {
+			Object databaseObj = new JSONParser().parse(oracleDatabaseJSON);
+			databaseArray = (JSONArray) databaseObj;
+		} catch (ParseException e) {
+			System.err.println("Error deserializing json");
+			e.printStackTrace();
+			return;
+		}
+        
+        Iterator cardIterator = databaseArray.iterator();
+        while (cardIterator.hasNext())
+        {
+        	JSONObject cardObj = (JSONObject) cardIterator.next();
+        	System.out.println(cardObj.get("name"));
+        }
+        System.out.println("extracted cards");
 	}
 
 }

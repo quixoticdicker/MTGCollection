@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Scanner;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -54,13 +55,21 @@ public class main {
 			return;
 		}
         
-        Iterator cardIterator = databaseArray.iterator();
+        Iterator cardStart = databaseArray.iterator();
+        Iterator cardIterator = cardStart;
+
+        System.out.println("Provide a name to search the database:");
+        Scanner s = new Scanner(System.in);
+        String cardNameSearch = s.next();
         while (cardIterator.hasNext())
         {
         	JSONObject cardObj = (JSONObject) cardIterator.next();
-        	System.out.println(cardObj.get("name"));
+        	String cardName = cardObj.get("name").toString();
+        	if (cardName.toLowerCase().contains(cardNameSearch.toLowerCase()))
+        	{
+        		System.out.println(cardName);
+        	}
         }
-        System.out.println("extracted cards");
 	}
 
 }

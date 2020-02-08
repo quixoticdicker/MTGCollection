@@ -37,22 +37,8 @@ public class main {
 			e.printStackTrace();
 			return;
 		}
-        
-        Iterator cardStart = databaseArray.iterator();
-        Iterator cardIterator = cardStart;
 
-        System.out.println("Provide a name to search the database:");
-        Scanner s = new Scanner(System.in);
-        String cardNameSearch = s.next();
-        while (cardIterator.hasNext())
-        {
-        	JSONObject cardObj = (JSONObject) cardIterator.next();
-        	String cardName = cardObj.get("name").toString();
-        	if (cardName.toLowerCase().contains(cardNameSearch.toLowerCase()))
-        	{
-        		System.out.println(cardName);
-        	}
-        }
+        cardDatabase database = new cardDatabase(databaseArray);
 	}
 
 }

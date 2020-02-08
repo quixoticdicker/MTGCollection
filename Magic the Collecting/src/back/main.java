@@ -22,24 +22,7 @@ public class main {
         }
         else
         {
-            try
-            {
-                BufferedReader reader = new BufferedReader(new FileReader("scryfall-oracle-cards.json"));
-                String line;
-                StringBuilder lines = new StringBuilder();
-                int i = 0;
-                while ((line = reader.readLine()) != null)
-                {
-	                lines.append(line + '\n');
-                }
-                reader.close();
-                oracleDatabaseJSON = lines.toString();
-            }
-            catch (Exception e)
-            {
-                System.err.println("Couldn't read cached oracle text.");
-                e.printStackTrace();
-            }
+        	oracleDatabaseJSON = utility.FileHelper.readTextFile("scryfall-oracle-cards.json");
         }
 
         System.out.println("Finished extracting database");

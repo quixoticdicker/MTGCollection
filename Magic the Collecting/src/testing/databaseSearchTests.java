@@ -10,6 +10,7 @@ import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import back.SearchBuilder;
 import back.cardDatabase;
 
 class databaseSearchTests {
@@ -45,7 +46,7 @@ class databaseSearchTests {
 		while (cardSearches.hasNext())
 		{
 			JSONObject nextSearch = (JSONObject) cardSearches.next();
-			searchDatabase.search(nextSearch);
+			searchDatabase.search(new SearchBuilder(nextSearch).searchConditions());
 		}
 	}
 

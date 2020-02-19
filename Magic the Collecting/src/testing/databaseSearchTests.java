@@ -3,6 +3,7 @@ package testing;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -42,12 +43,18 @@ class databaseSearchTests {
 		
 		assertNotNull(testSearches);
 		
+		List<JSONObject> cardsFound;
 		Iterator<?> cardSearches = testSearches.iterator();
 		while (cardSearches.hasNext())
 		{
 			JSONObject nextSearch = (JSONObject) cardSearches.next();
-			searchDatabase.search(new SearchBuilder(nextSearch).searchConditions());
+			cardsFound = searchDatabase.search(new SearchBuilder(nextSearch).searchConditions());
 		}
+		
+		SearchBuilder sb = new SearchBuilder();
+		sb.NameContains("bell");
+		cardsFound = searchDatabase.search(sb.searchConditions());
+		assertEquals(35, cardsFound.size());
 	}
 
 }

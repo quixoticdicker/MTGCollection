@@ -109,11 +109,11 @@ public class SearchBuilder {
 	{
 		if (ignoreCase)
 		{
-			comparators.add(card -> searchString.toLowerCase() == ((String)((JSONObject)card).get(paramString)).toLowerCase());
+			comparators.add(card -> ((JSONObject)card).get(paramString).toString().toLowerCase().contains(searchString.toLowerCase()));
 		}
 		else
 		{
-			comparators.add(card -> searchString == (String)((JSONObject)card).get(paramString));
+			comparators.add(card -> ((JSONObject)card).get(paramString).toString().contains(searchString));
 		}
 		return this;
 	}

@@ -8,7 +8,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import back.SearchBuilder;
 import back.cardDatabase;
+import javafx.scene.layout.GridPane;
 
 /**
  * This singleton class is the main runner for the application and
@@ -18,7 +20,11 @@ import back.cardDatabase;
 public class World {
 	
 	static World world;
+	
 	cardDatabase database;
+	
+	SearchPane searchParams;
+	SearchResultsPane searchResults;
 	
 	private World()
 	{
@@ -65,8 +71,23 @@ public class World {
 		}
 	}
 	
+	public GridPane updateWindow()
+	{
+		GridPane window = new GridPane();
+
+		searchParams = new SearchPane(world);
+		window.add(searchParams, 0, 1);
+		
+		searchResults = new SearchResultsPane(world);
+		window.add(searchResults, 1, 1);
+		
+		return window;
+	}
+	
 	public void search(List<Predicate<JSONObject>> comparators)
 	{
-		//searchResultsPane.update(database.search(comparators));
+		List<JSONObject> results = database.search(comparators);
+		System.out.println("found " + results.size() + " cards.");
+		searchResults.updateResults(results);
 	}
 }
